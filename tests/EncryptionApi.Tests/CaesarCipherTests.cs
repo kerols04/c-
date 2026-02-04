@@ -21,4 +21,14 @@ public class CaesarCipherTests
 
         Assert.Equal("123-!?", result);
     }
+
+    [Fact]
+    public void Decrypt_ReversesEncrypt()
+    {
+        var original = "Hej världen!";
+        var encrypted = CaesarCipher.Transform(original, CaesarCipher.DefaultShift);
+        var decrypted = CaesarCipher.Transform(encrypted, -CaesarCipher.DefaultShift);
+
+        Assert.Equal(original, decrypted);
+    }
 }

@@ -1,6 +1,8 @@
 # Encryption API CI/CD
 
-Detta projekt innehåller ett enkelt C#-API med två endpoints för kryptering och avkryptering via ett Caesar-chiffer. Fokus ligger på att visa en komplett CI/CD-kedja med Git Flow, GitHub Actions och driftsättning till AWS Elastic Beanstalk.
+Detta projekt innehåller ett enkelt C#-API med två endpoints för kryptering och avkryptering via ett Caesar-chiffer. Fokus ligger på att visa en komplett CI/CD-kedja med Git Flow, GitHub Actions och driftsättning till AWS Elastic Beanstalk (Docker).
+
+Repo: https://github.com/kerols04/crypto-cicd-api-csharp.git
 
 ## Endpoints
 
@@ -36,7 +38,7 @@ Svar:
 GitHub Actions används för att:
 
 1. Bygga och testa projektet på varje pull request.
-2. Publicera och deploya till AWS Elastic Beanstalk när `main` uppdateras.
+2. Bygga Docker-image via Elastic Beanstalk och deploya när `main` uppdateras.
 
 Se `docs/ci-cd-process.md` för den visuella processen och beskrivning av branch-strategi.
 
@@ -56,13 +58,16 @@ dotnet test tests/EncryptionApi.Tests/EncryptionApi.Tests.csproj
 
 ## Deployment-krav
 
+Elastic Beanstalk används med följande inställningar:
+
+- **Region:** `eu-north-1`
+- **Application:** `crypto-cicd-api-csharp-prod`
+- **Environment:** `Crypto-cicd-api-csharp-prod-env`
+
 Följande secrets måste finnas i GitHub för att deployment ska fungera:
 
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
-- `AWS_REGION`
-- `EB_APPLICATION_NAME`
-- `EB_ENVIRONMENT_NAME`
 - `EB_S3_BUCKET`
 
 Workflow-filen finns i `.github/workflows/deploy.yml`.

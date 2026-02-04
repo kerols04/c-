@@ -11,6 +11,7 @@ var app = builder.Build();
 
 app.MapGet("/", () => Results.Ok(new { message = "Encryption API is running" }));
 
+// Encrypts text using a Caesar cipher with the provided shift (default = 3).
 app.MapPost("/encrypt", (CipherRequest request) =>
 {
     if (string.IsNullOrWhiteSpace(request.Text))
@@ -18,12 +19,13 @@ app.MapPost("/encrypt", (CipherRequest request) =>
         return Results.BadRequest(new { error = "Text is required." });
     }
 
-    var shift = request.Shift ?? 3;
+    var shift = request.Shift ?? CaesarCipher.DefaultShift;
     var result = CaesarCipher.Transform(request.Text, shift);
 
     return Results.Ok(new CipherResponse(result));
 });
 
+// Decrypts text by reversing the Caesar cipher shift.
 app.MapPost("/decrypt", (CipherRequest request) =>
 {
     if (string.IsNullOrWhiteSpace(request.Text))
@@ -31,7 +33,7 @@ app.MapPost("/decrypt", (CipherRequest request) =>
         return Results.BadRequest(new { error = "Text is required." });
     }
 
-    var shift = request.Shift ?? 3;
+    var shift = request.Shift ?? CaesarCipher.DefaultShift;
     var result = CaesarCipher.Transform(request.Text, -shift);
 
     return Results.Ok(new CipherResponse(result));
@@ -44,6 +46,9 @@ public record CipherResponse(string Result);
 
 public static class CaesarCipher
 {
+    public const int DefaultShift = 3;
+
+    // Transforms the input by shifting alphabetic characters while keeping casing and punctuation.
     public static string Transform(string input, int shift)
     {
         if (string.IsNullOrEmpty(input))
@@ -57,6 +62,7 @@ public static class CaesarCipher
         return new string(chars);
     }
 
+    // Keeps non-letters unchanged so punctuation survives round-trips.
     private static char TransformChar(char character, int shift)
     {
         if (!char.IsLetter(character))

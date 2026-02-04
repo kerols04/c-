@@ -10,7 +10,7 @@ flowchart LR
   ci[CI: Build + Test]
   devBranch[develop]
   mainBranch[main]
-  cd[CD: Deploy till AWS EB]
+  cd[CD: Deploy Docker till AWS EB]
 
   dev --> feat --> pr --> ci --> devBranch
   devBranch --> pr --> ci --> mainBranch --> cd
@@ -25,7 +25,13 @@ flowchart LR
 ## Pipeline-steg
 
 1. **Build & Test** körs på pull requests till både `develop` och `main`.
-2. **Deploy** körs på push till `main` efter godkänd PR.
+2. **Deploy** körs på push till `main` efter godkänd PR och bygger en Docker-bundle till Elastic Beanstalk.
+
+## Elastic Beanstalk-mål
+
+- **Region:** `eu-north-1`
+- **Application:** `crypto-cicd-api-csharp-prod`
+- **Environment:** `Crypto-cicd-api-csharp-prod-env`
 
 ## Fullstack (backend + frontend)
 
